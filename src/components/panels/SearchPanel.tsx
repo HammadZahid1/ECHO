@@ -206,6 +206,7 @@ export function SearchPanel({ autoFocus = false, className = '', onClose }: Sear
                 <button
                   key={result.nodeId}
                   type="button"
+                  data-testid="search-result"
                   onMouseEnter={() => setActiveIndex(index)}
                   onClick={() => chooseResult(result)}
                   className={`flex w-full items-start gap-2.5 px-3 py-2.5 text-left transition-colors ${index === activeIndex ? 'bg-cyan-400/[0.08]' : 'hover:bg-white/[0.03]'}`}
