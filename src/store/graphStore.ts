@@ -21,7 +21,13 @@ import { createDemoGraph, DEMO_DATASETS } from '@/data/demo';
 import { createId } from '@/lib/utils/id';
 import { canRedo, canUndo, pushHistory, redoEntry, trimHistory, undoEntry } from './history';
 
-const debouncedSave = createDebouncedSaver(700);
+const debouncedSave = createDebouncedSaver(700, {
+  onSaved: () => useGraphStore.setState({ storageStatus: 'saved', storageMessage: '' }),
+  onError: (error) => useGraphStore.setState({
+    storageStatus: 'error',
+    storageMessage: error instanceof Error ? error.message : 'Failed to save locally',
+  }),
+});
 
 interface GraphState {
   workspaces: GraphWorkspace[];
