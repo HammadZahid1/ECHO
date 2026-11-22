@@ -51,6 +51,12 @@ export function AppShell() {
   useEffect(() => { if (!initialized) void initialize(); }, [initialize, initialized]);
 
   useEffect(() => {
+    const flush = (): void => { void useGraphStore.getState().persistNow(); };
+    window.addEventListener('beforeunload', flush);
+    return () => window.removeEventListener('beforeunload', flush);
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     root.dataset.theme = theme;
     root.dataset.accent = accent;
