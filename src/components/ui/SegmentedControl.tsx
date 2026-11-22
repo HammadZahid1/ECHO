@@ -5,15 +5,16 @@ interface Option<T extends string> {
 }
 
 export function SegmentedControl<T extends string>({
-  options, value, onChange, className = '',
+  options, value, onChange, className = '', label,
 }: {
   options: Option<T>[];
   value: T;
   onChange: (value: T) => void;
   className?: string;
+  label?: string;
 }) {
   return (
-    <div role="tablist" className={`inline-flex rounded-[5px] border border-white/[0.08] bg-black/25 p-0.5 ${className}`}>
+    <div role="tablist" aria-label={label} className={`inline-flex rounded-[5px] border border-white/[0.08] bg-black/25 p-0.5 ${className}`}>
       {options.map((option) => (
         <button
           key={option.value}
