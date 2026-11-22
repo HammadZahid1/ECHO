@@ -7,6 +7,7 @@ test('keeps graph edits after a full reload', async ({ page }) => {
   const before = await nodeCount(page);
   await page.getByRole('button', { name: 'Create node (N)' }).click();
   await expect.poll(() => nodeCount(page)).toBe(before + 1);
+  await expect(page.locator('footer')).toContainText('saved');
 
   await page.reload();
   await skipOnboarding(page);
