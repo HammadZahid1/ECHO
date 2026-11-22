@@ -78,13 +78,17 @@ export class SearchEngine {
     this.history = [];
   }
 
-  private toResult(document: SearchDocument, score: number, highlights: SearchResult['highlights'], matchedFields: string[]): SearchResult {
+  private toResult(document: SearchDocument, score: number, highlightFields: string[], matchedFields: string[]): SearchResult {
+    const snippet = document.description || document.tags.join(' · ') || 'No description yet';
     return {
       nodeId: document.nodeId,
       title: document.title,
-      snippet: truncate(document.description || document.tags.join(' · ') || 'No description yet', 110),
+      snippet: truncate(snippet, 110),
       score,
-      highlights: highlights.map((field) => ({ field: field as SearchResult['highlights'][number]['field'], value: document.title })),
+      highlights: highlightFields.map((field) => ({
+        field: field as SearchResult['highlights'][number]['field'],
+        value: field === 'description' ? snippet : document.title,
+      })),
       matchedFields,
       nodeType: document.type as SearchResult['nodeType'],
     };
