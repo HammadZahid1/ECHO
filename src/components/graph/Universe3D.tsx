@@ -1,6 +1,6 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
-import { Html, OrbitControls, Stars } from '@react-three/drei';
+import { OrbitControls, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import type { GraphData, GraphVisualSettings } from '@/types';
 import { NODE_TYPE_INFO } from '@/lib/graph/registry';
@@ -133,14 +133,48 @@ function EdgeField({ graph, visual }: { graph: GraphData; visual: GraphVisualSet
   );
 }
 
+function LabelSprite({ title, position }: { title: string; position: [number, number, number] }) {
+  const texture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 96;
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.fillStyle = 'rgba(8, 10, 13, 0.72)';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+      context.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+      context.fillStyle = '#d4d8de';
+      context.font = '30px Inter, Segoe UI, sans-serif';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      const text = title.length > 34 ? `${title.slice(0, 33)}…` : title;
+      context.fillText(text, canvas.width / 2, canvas.height / 2, canvas.width - 28);
+    }
+    const map = new THREE.CanvasTexture(canvas);
+    map.minFilter = THREE.LinearFilter;
+    return map;
+  }, [title]);
+
+  useEffect(() => () => texture.dispose(), [texture]);
+  const width = Math.min(20, Math.max(7, title.length * 0.42));
+  return (
+    <sprite position={position} scale={[width, width * 0.1875, 1]}>
+      <spriteMaterial map={texture} transparent depthWrite={false} opacity={0.9} />
+    </sprite>
+  );
+}
+
 function Labels({ graph, visual }: { graph: GraphData; visual: GraphVisualSettings }) {
   if (!visual.showLabels) return null;
   return (
     <>
       {graph.nodes.filter((node) => node.importance > 0.72).slice(0, 40).map((node) => (
-        <Html key={node.id} position={[node.position.x, node.position.y + 2.2, node.position.z]} center distanceFactor={60} style={{ pointerEvents: 'none' }}>
-          <span className="whitespace-nowrap rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-zinc-300">{node.title}</span>
-        </Html>
+        <LabelSprite
+          key={node.id}
+          title={node.title}
+          position={[node.position.x, node.position.y + 2.2, node.position.z]}
+        />
       ))}
     </>
   );
