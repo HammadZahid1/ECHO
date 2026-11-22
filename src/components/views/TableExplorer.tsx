@@ -17,7 +17,7 @@ export function TableExplorer({ graph }: { graph: GraphData }) {
   const setFocus = useGraphStore((state) => state.setFocus);
   const degree = useMemo(() => {
     const adjacency = buildAdjacency(graph);
-    return new Map(graph.nodes.map((node) => [node.id, adjacency.get(node.id)?.neighbors.length ?? 0]));
+    return new Map(graph.nodes.map((node) => [node.id, adjacency.degree.get(node.id) ?? 0]));
   }, [graph]);
 
   const rows = useMemo(() => {

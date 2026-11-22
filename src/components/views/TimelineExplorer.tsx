@@ -3,7 +3,6 @@ import { CalendarDays, Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import type { GraphData } from '@/types';
 import { NODE_TYPE_INFO } from '@/lib/graph/registry';
 import { useGraphStore } from '@/store/graphStore';
-import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { TextField } from '@/components/ui/controls';
 
