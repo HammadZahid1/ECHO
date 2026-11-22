@@ -1,0 +1,293 @@
+import type { GraphData } from '@/types';
+import { createEdge, createNode, createTag } from '@/lib/graph/factory';
+import type { DemoDataset } from './types';
+
+const stamp = { createdAt: Date.UTC(2025, 0, 1), updatedAt: Date.UTC(2025, 0, 1) } as const;
+
+export const artificialIntelligenceDataset: DemoDataset = {
+  id: 'artificial-intelligence',
+  name: 'Artificial Intelligence',
+  description:
+    'From the Dartmouth workshop to transformers and alignment debates: the ideas, experiments, systems, and open questions that define machine intelligence.',
+  accent: '#9d7bf5',
+  topics: ['History', 'Machine learning', 'Deep learning', 'Agents', 'Ethics'],
+  create: (): GraphData => ({
+    nodes: [
+      createNode({
+        ...stamp,
+        id: 'ai-field',
+        title: 'Artificial intelligence',
+        description:
+          'The study and construction of systems that perform tasks associated with human intelligence, such as reasoning, perception, and planning. The field has oscillated between symbolic and statistical approaches.',
+        type: 'concept',
+        tags: ['field'],
+        importance: 1,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-dartmouth',
+        title: 'Dartmouth Workshop (1956)',
+        description:
+          'A summer research workshop that introduced the term "artificial intelligence" and gathered researchers around the possibility of simulating intelligence with machines. It is often treated as the field’s founding event.',
+        type: 'event',
+        tags: ['history', 'event'],
+        importance: 0.88,
+        metadata: { year: 1956, location: 'Dartmouth College' },
+        references: ['McCarthy et al., A Proposal for the Dartmouth Summer Research Project (1955)'],
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-mccarthy',
+        title: 'John McCarthy',
+        description:
+          'A pioneer who coined the term artificial intelligence, organized the Dartmouth workshop, and created the Lisp language. His work centered on symbolic representation and reasoning.',
+        type: 'person',
+        tags: ['person', 'history'],
+        importance: 0.76,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-turing',
+        title: 'Alan Turing',
+        description:
+          'A mathematician whose work on computation and machine intelligence framed many of AI’s foundational questions. His 1950 paper asked whether machines could think.',
+        type: 'person',
+        tags: ['person', 'history'],
+        importance: 0.84,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-imitation',
+        title: 'Imitation game (Turing test)',
+        description:
+          'A behavioral criterion proposed by Turing: a machine counts as intelligent if an interrogator cannot reliably distinguish its replies from a human’s. It shifted debate from internal mechanism to observable performance.',
+        type: 'research',
+        tags: ['foundations', 'philosophy'],
+        importance: 0.78,
+        references: ['Turing, Computing Machinery and Intelligence (1950)'],
+        metadata: { year: 1950 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-symbolic',
+        title: 'Symbolic AI (GOFAI)',
+        description:
+          'An approach that represents knowledge as explicit symbols and manipulates them with logical rules. It dominated early AI research but struggled with commonsense knowledge and perception.',
+        type: 'concept',
+        tags: ['paradigm'],
+        importance: 0.8,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-connectionism',
+        title: 'Connectionism',
+        description:
+          'A paradigm modeling intelligence as distributed computation across many simple, weighted units. Its modern form is the neural network.',
+        type: 'concept',
+        tags: ['paradigm'],
+        importance: 0.82,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-perceptron',
+        title: 'Perceptron',
+        description:
+          'An early learning algorithm introduced by Frank Rosenblatt in 1957 that adjusts weights to classify patterns. Its inability to solve nonlinear problems such as XOR exposed the limits of single-layer networks.',
+        type: 'research',
+        tags: ['machine-learning', 'history'],
+        importance: 0.7,
+        metadata: { year: 1957, author: 'Frank Rosenblatt' },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-backprop',
+        title: 'Backpropagation',
+        description:
+          'An algorithm for computing gradients in layered networks by propagating errors backward. It made training multilayer networks practical and became the engine of deep learning.',
+        type: 'research',
+        tags: ['machine-learning', 'algorithm'],
+        importance: 0.86,
+        references: ['Rumelhart, Hinton & Williams, Learning representations by back-propagating errors (1986)'],
+        metadata: { year: 1986 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-ml',
+        title: 'Machine learning',
+        description:
+          'The study of algorithms that improve their performance on a task by using data rather than explicit programming. It is now the dominant methodological core of AI.',
+        type: 'concept',
+        tags: ['machine-learning'],
+        importance: 0.94,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-supervised',
+        title: 'Supervised learning',
+        description:
+          'Learning a mapping from inputs to labeled outputs using example pairs. Classification and regression are its two central problem types.',
+        type: 'concept',
+        tags: ['machine-learning'],
+        importance: 0.82,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-unsupervised',
+        title: 'Unsupervised learning',
+        description:
+          'Finding structure in data without supplied labels, as in clustering or dimensionality reduction. It contrasts with learning defined by an external target.',
+        type: 'concept',
+        tags: ['machine-learning'],
+        importance: 0.72,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-rl',
+        title: 'Reinforcement learning',
+        description:
+          'Learning to choose actions in an environment so as to maximize cumulative reward. The agent must balance exploring unknown actions with exploiting what it already knows.',
+        type: 'concept',
+        tags: ['machine-learning', 'agents'],
+        importance: 0.8,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-deep',
+        title: 'Deep learning',
+        description:
+          'Machine learning with multilayer neural networks that learn hierarchical representations from data. Advances in data, GPUs, and training methods drove its resurgence after 2012.',
+        type: 'concept',
+        tags: ['deep-learning'],
+        importance: 0.92,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-cnn',
+        title: 'Convolutional neural network',
+        description:
+          'A network architecture using convolution and pooling to exploit the spatial structure of images. It transformed computer vision and remains influential for perceptual tasks.',
+        type: 'research',
+        tags: ['deep-learning', 'vision'],
+        importance: 0.76,
+        references: ['LeCun et al., Gradient-based learning applied to document recognition (1998)'],
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-transformer',
+        title: 'Transformer architecture',
+        description:
+          'A sequence model introduced in 2017 that relies entirely on attention mechanisms instead of recurrence. Its parallelism and scaling properties enabled very large language models.',
+        type: 'research',
+        tags: ['deep-learning', 'nlp'],
+        importance: 0.94,
+        references: ['Vaswani et al., Attention Is All You Need (2017)'],
+        metadata: { year: 2017 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-llm',
+        title: 'Large language model',
+        description:
+          'A neural language model with billions of parameters trained on broad text corpora. Such models acquire versatile linguistic and reasoning behaviors, though their reliability remains uneven.',
+        type: 'research',
+        tags: ['deep-learning', 'nlp'],
+        importance: 0.9,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-gpt',
+        title: 'GPT-3',
+        description:
+          'A 175-billion-parameter autoregressive language model released by OpenAI in 2020. It demonstrated that scaling a transformer could yield strong few-shot performance without task-specific training.',
+        type: 'project',
+        tags: ['nlp', 'project'],
+        importance: 0.78,
+        metadata: { year: 2020, parameters: 175000000000 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-alpha',
+        title: 'AlphaGo',
+        description:
+          'A Google DeepMind program that defeated world champion Lee Sedol at Go in 2016. It combined deep neural networks with Monte Carlo tree search and reinforcement learning.',
+        type: 'project',
+        tags: ['agents', 'project'],
+        importance: 0.8,
+        metadata: { year: 2016 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-dataset',
+        title: 'ImageNet',
+        description:
+          'A large labeled image dataset and annual challenge launched in the late 2000s. It supplied the benchmark on which deep convolutional networks demonstrated a decisive advantage.',
+        type: 'resource',
+        tags: ['data', 'benchmark'],
+        importance: 0.78,
+        references: ['Deng et al., ImageNet: A large-scale hierarchical image database (2009)'],
+        metadata: { year: 2009 },
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-bias',
+        title: 'Algorithmic bias',
+        description:
+          'Systematic unfairness in model outputs arising from unrepresentative data, biased labels, or design choices. Bias can persist even when protected attributes are removed from inputs.',
+        type: 'concept',
+        tags: ['ethics', 'data'],
+        importance: 0.76,
+      }),
+      createNode({
+        ...stamp,
+        id: 'ai-ethics',
+        title: 'AI alignment and governance',
+        description:
+          'The open question of how to make powerful systems pursue intended goals and remain accountable to people. It spans technical robustness, fairness, transparency, and institutional oversight.',
+        type: 'question',
+        tags: ['ethics', 'governance'],
+        importance: 0.86,
+      }),
+    ],
+    edges: [
+      createEdge('ai-field', 'ai-ml', { ...stamp, id: 'ai-edge-01', type: 'contains', label: 'has as its methodological core' }),
+      createEdge('ai-field', 'ai-symbolic', { ...stamp, id: 'ai-edge-02', type: 'contains', label: 'includes the historical paradigm' }),
+      createEdge('ai-field', 'ai-connectionism', { ...stamp, id: 'ai-edge-03', type: 'contains', label: 'includes the paradigm' }),
+      createEdge('ai-field', 'ai-rl', { ...stamp, id: 'ai-edge-04', type: 'contains', label: 'includes as a subfield' }),
+      createEdge('ai-dartmouth', 'ai-field', { ...stamp, id: 'ai-edge-05', type: 'causes', label: 'named and helped establish', directed: true }),
+      createEdge('ai-mccarthy', 'ai-dartmouth', { ...stamp, id: 'ai-edge-06', type: 'influences', label: 'proposed and organized', directed: true }),
+      createEdge('ai-mccarthy', 'ai-symbolic', { ...stamp, id: 'ai-edge-07', type: 'influences', label: 'championed through Lisp', directed: true }),
+      createEdge('ai-turing', 'ai-imitation', { ...stamp, id: 'ai-edge-08', type: 'references', label: 'proposed in his 1950 paper', directed: true }),
+      createEdge('ai-imitation', 'ai-field', { ...stamp, id: 'ai-edge-09', type: 'influences', label: 'framed an early test for', directed: true }),
+      createEdge('ai-symbolic', 'ai-connectionism', { ...stamp, id: 'ai-edge-10', type: 'contradicts', label: 'historically competed with' }),
+      createEdge('ai-connectionism', 'ai-ml', { ...stamp, id: 'ai-edge-11', type: 'influences', label: 'underlies statistical approaches in', directed: true }),
+      createEdge('ai-ml', 'ai-supervised', { ...stamp, id: 'ai-edge-12', type: 'contains', label: 'includes' }),
+      createEdge('ai-ml', 'ai-unsupervised', { ...stamp, id: 'ai-edge-13', type: 'contains', label: 'includes' }),
+      createEdge('ai-ml', 'ai-rl', { ...stamp, id: 'ai-edge-14', type: 'contains', label: 'includes' }),
+      createEdge('ai-perceptron', 'ai-connectionism', { ...stamp, id: 'ai-edge-15', type: 'derived', label: 'is an early model within', directed: true }),
+      createEdge('ai-backprop', 'ai-perceptron', { ...stamp, id: 'ai-edge-16', type: 'derived', label: 'extends the single-layer learner of', directed: true }),
+      createEdge('ai-backprop', 'ai-deep', { ...stamp, id: 'ai-edge-17', type: 'supports', label: 'made training multilayer networks practical for', directed: true }),
+      createEdge('ai-deep', 'ai-cnn', { ...stamp, id: 'ai-edge-18', type: 'contains', label: 'includes the vision architecture' }),
+      createEdge('ai-deep', 'ai-transformer', { ...stamp, id: 'ai-edge-19', type: 'contains', label: 'includes the sequence architecture' }),
+      createEdge('ai-deep', 'ai-ml', { ...stamp, id: 'ai-edge-20', type: 'derived', label: 'is a subfield of', directed: true }),
+      createEdge('ai-supervised', 'ai-deep', { ...stamp, id: 'ai-edge-21', type: 'supports', label: 'provides the labeled training signal for', directed: true }),
+      createEdge('ai-unsupervised', 'ai-supervised', { ...stamp, id: 'ai-edge-22', type: 'contradicts', label: 'differs by dispensing with labels' }),
+      createEdge('ai-transformer', 'ai-llm', { ...stamp, id: 'ai-edge-23', type: 'causes', label: 'enabled the scaling of', directed: true }),
+      createEdge('ai-llm', 'ai-gpt', { ...stamp, id: 'ai-edge-24', type: 'contains', label: 'exemplified by', directed: true }),
+      createEdge('ai-gpt', 'ai-transformer', { ...stamp, id: 'ai-edge-25', type: 'depends', label: 'is built on', directed: true }),
+      createEdge('ai-dataset', 'ai-deep', { ...stamp, id: 'ai-edge-26', type: 'supports', label: 'supplied the benchmark that accelerated', directed: true }),
+      createEdge('ai-alpha', 'ai-rl', { ...stamp, id: 'ai-edge-27', type: 'supports', label: 'demonstrated at scale the power of', directed: true }),
+      createEdge('ai-alpha', 'ai-deep', { ...stamp, id: 'ai-edge-28', type: 'depends', label: 'combined search with', directed: true }),
+      createEdge('ai-dataset', 'ai-bias', { ...stamp, id: 'ai-edge-29', type: 'influences', label: 'can introduce through unrepresentative samples', directed: true }),
+      createEdge('ai-bias', 'ai-ethics', { ...stamp, id: 'ai-edge-30', type: 'causes', label: 'motivates fairness concerns in', directed: true }),
+      createEdge('ai-gpt', 'ai-ethics', { ...stamp, id: 'ai-edge-31', type: 'influences', label: 'intensified public debate about', directed: true }),
+      createEdge('ai-ethics', 'ai-field', { ...stamp, id: 'ai-edge-32', type: 'influences', label: 'shapes responsible practice in', directed: true }),
+    ],
+    tags: [
+      createTag('machine-learning', { id: 'ai-tag-ml', color: '#5b8def', createdAt: Date.UTC(2025, 0, 1), description: 'Learning from data' }),
+      createTag('deep-learning', { id: 'ai-tag-deep', color: '#9d7bf5', createdAt: Date.UTC(2025, 0, 1), description: 'Multilayer neural networks' }),
+      createTag('agents', { id: 'ai-tag-agents', color: '#4fd8e8', createdAt: Date.UTC(2025, 0, 1), description: 'Systems that act and plan' }),
+      createTag('ethics', { id: 'ai-tag-ethics', color: '#e88fb8', createdAt: Date.UTC(2025, 0, 1), description: 'Fairness, alignment, and governance' }),
+      createTag('history', { id: 'ai-tag-history', color: '#e3b35c', createdAt: Date.UTC(2025, 0, 1), description: 'Origins and milestones' }),
+    ],
+  }),
+};
