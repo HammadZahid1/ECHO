@@ -36,3 +36,4 @@ Thumbs.db
 .tmp/
 *.local
 test-output.txt
+e2e-output.txt
