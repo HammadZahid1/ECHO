@@ -150,6 +150,7 @@ export function Graph2D({ graph, visual, focusId, selectedIds, hoveredId }: Grap
       }}
       onContextMenu={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         const id = pickNode(event.clientX, event.clientY);
         if (id) selectNode(id);
         openContextMenu({ x: event.clientX, y: event.clientY, target: id ? 'node' : 'graph', targetId: id ?? undefined });
