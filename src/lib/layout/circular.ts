@@ -1,4 +1,4 @@
-import type { PositionMap } from './types';
+import type { LayoutOptions, PositionMap } from './types';
 
 /** Evenly spaced nodes on a single circle (or ringed spiral for large graphs). */
 export function circularLayout(options: LayoutOptions): PositionMap {

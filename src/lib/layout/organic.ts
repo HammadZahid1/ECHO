@@ -1,4 +1,4 @@
-import type { PositionMap } from './types';
+import type { LayoutOptions, PositionMap } from './types';
 import { radialLayout } from './radial';
 import { seededRandom } from '@/lib/utils/math';
 

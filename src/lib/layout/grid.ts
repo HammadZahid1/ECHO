@@ -1,4 +1,4 @@
-import type { PositionMap } from './types';
+import type { LayoutOptions, PositionMap } from './types';
 
 /** Deterministic square-ish grid, ordered by importance then title. */
 export function gridLayout(options: LayoutOptions): PositionMap {
