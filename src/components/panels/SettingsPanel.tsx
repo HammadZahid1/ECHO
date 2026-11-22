@@ -86,14 +86,14 @@ export function SettingsPanel() {
 
         <div className="space-y-2 pt-2">
           <p className="text-[10px] text-zinc-500">Quality preset</p>
-          <SegmentedControl value={visual.quality} onChange={(quality) => setVisual({ quality })} options={[
+          <SegmentedControl label="Quality preset" value={visual.quality} onChange={(quality) => setVisual({ quality })} options={[
             { value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' },
           ]} />
           <Slider label="Node scale" value={visual.nodeScale} min={0.4} max={2.5} step={0.05} onChange={(nodeScale) => setVisual({ nodeScale })} />
           <Slider label="Edge opacity" value={visual.edgeOpacity} min={0.05} max={1} step={0.05} onChange={(edgeOpacity) => setVisual({ edgeOpacity })} />
           <Slider label="Edge curvature" value={visual.edgeCurvature} min={0} max={1} step={0.05} onChange={(edgeCurvature) => setVisual({ edgeCurvature })} />
           <p className="text-[10px] text-zinc-500">Background</p>
-          <SegmentedControl value={visual.background} onChange={(background) => setVisual({ background })} options={[
+          <SegmentedControl label="Background" value={visual.background} onChange={(background) => setVisual({ background })} options={[
             { value: 'void', label: 'Void' }, { value: 'deep', label: 'Deep' }, { value: 'graphite', label: 'Graphite' },
           ]} />
         </div>
@@ -102,13 +102,13 @@ export function SettingsPanel() {
         <div className="space-y-2">
           <div>
             <p className="mb-1 text-[10px] text-zinc-500">Theme</p>
-            <SegmentedControl value={theme} onChange={(value) => update({ theme: value })} options={[
+            <SegmentedControl label="Theme" value={theme} onChange={(value) => update({ theme: value })} options={[
               { value: 'midnight', label: 'Midnight' }, { value: 'graphite', label: 'Graphite' }, { value: 'obsidian', label: 'Obsidian' },
             ]} />
           </div>
           <div>
             <p className="mb-1 text-[10px] text-zinc-500">Accent</p>
-            <SegmentedControl value={accent} onChange={(value) => update({ accent: value })} options={[
+            <SegmentedControl label="Accent" value={accent} onChange={(value) => update({ accent: value })} options={[
               { value: 'cyan', label: 'Cyan' }, { value: 'violet', label: 'Violet' }, { value: 'blue', label: 'Blue' },
             ]} />
           </div>
