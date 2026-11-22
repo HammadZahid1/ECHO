@@ -84,8 +84,13 @@ function NodeField({ graph, visual, selectedIds, hoveredId }: SceneProps) {
       }}
       onContextMenu={(event) => {
         event.stopPropagation();
+        event.nativeEvent.preventDefault();
+        event.nativeEvent.stopPropagation();
         const id = nodeIdAt(event);
-        if (!id) return;
+        if (!id) {
+          openContextMenu({ x: event.nativeEvent.clientX, y: event.nativeEvent.clientY, target: 'graph' });
+          return;
+        }
         selectNode(id);
         openContextMenu({ x: event.nativeEvent.clientX, y: event.nativeEvent.clientY, target: 'node', targetId: id });
       }}
@@ -226,6 +231,16 @@ export function Universe3D({ graph, visual, focusId, selectedIds, hoveredId }: S
       dpr={visual.quality === 'low' ? 1 : [1, 1.75]}
       gl={{ antialias: visual.quality !== 'low', alpha: false }}
       onPointerMissed={() => useGraphStore.getState().selectNode(null)}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        window.setTimeout(() => {
+          // A mesh handler may have opened a node-specific menu for this event.
+          if (!useUIStore.getState().contextMenu) {
+            useUIStore.getState().openContextMenu({ x: event.clientX, y: event.clientY, target: 'graph' });
+          }
+        }, 0);
+      }}
     >
       <Scene graph={graph} visual={visual} focusId={focusId} selectedIds={selectedIds} hoveredId={hoveredId} />
     </Canvas>
