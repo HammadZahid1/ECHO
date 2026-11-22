@@ -18,12 +18,12 @@ export function HierarchyExplorer({ graph }: { graph: GraphData }) {
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#08090b] p-2">
-      <svg className="absolute inset-0 h-full w-full" aria-hidden="true">
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         {graph.edges.map((edge) => {
           const a = positions.get(edge.source);
           const b = positions.get(edge.target);
           if (!a || !b) return null;
-          return <path key={edge.id} d={`M ${px(a.x)}% ${py(a.y)}% C ${px(a.x)}% ${(py(a.y) + py(b.y)) / 2}%, ${px(b.x)}% ${(py(a.y) + py(b.y)) / 2}%, ${px(b.x)}% ${py(b.y)}%`} fill="none" stroke="#394653" strokeWidth="1" />;
+          return <path key={edge.id} d={`M ${px(a.x)} ${py(a.y)} C ${px(a.x)} ${(py(a.y) + py(b.y)) / 2}, ${px(b.x)} ${(py(a.y) + py(b.y)) / 2}, ${px(b.x)} ${py(b.y)}`} fill="none" stroke="#394653" strokeWidth="1" vectorEffect="non-scaling-stroke" />;
         })}
       </svg>
       {graph.nodes.map((node) => {
