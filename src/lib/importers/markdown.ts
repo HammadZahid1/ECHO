@@ -1,6 +1,6 @@
 import type { ImportIssue, ImportOptions, ImportResult, ParsedDocument } from '@/types';
 import { DEFAULT_IMPORT_OPTIONS, normalizeGraph } from '@/lib/graph/validate';
-import { createGraphData, createId } from '@/lib/graph/factory';
+import { createId } from '@/lib/utils/id';
 import { normalizeText } from '@/lib/utils/text';
 
 export function parseMarkdown(text: string): ParsedDocument {

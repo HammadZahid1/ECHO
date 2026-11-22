@@ -1,6 +1,6 @@
 import type { ImportOptions, ImportResult, ParsedDocument } from '@/types';
 import { DEFAULT_IMPORT_OPTIONS, normalizeGraph } from '@/lib/graph/validate';
-import { createId } from '@/lib/graph/factory';
+import { createId } from '@/lib/utils/id';
 import { truncate } from '@/lib/utils/text';
 
 /** Converts loosely structured plain text into nodes, tags and optional relations. */

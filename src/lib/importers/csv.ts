@@ -63,7 +63,7 @@ export function importCsvNodes(text: string, options: ImportOptions = DEFAULT_IM
   const record = (values: string[]): Record<string, string> =>
     Object.fromEntries(header.map((name, index) => [name, values[index] ?? '']));
 
-  const nodes = rows.slice(1).map((values, index) => {
+  const nodes = rows.slice(1).map((values) => {
     const value = record(values);
     const rawTags = value.tags || value.tag || '';
     return {
