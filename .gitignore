@@ -35,3 +35,4 @@ Thumbs.db
 # local persistence / scratch
 .tmp/
 *.local
+test-output.txt
