@@ -153,4 +153,21 @@ describe('createDebouncedSaver', () => {
     expect(db.put).toHaveBeenCalledTimes(2);
     expect(db.put).toHaveBeenLastCalledWith('workspaces', expect.objectContaining({ id: 'c' }));
   });
+
+  it('reports successful persistence through hooks', async () => {
+    const onSaved = vi.fn();
+    const saver = createDebouncedSaver(100, { onSaved });
+    saver(createWorkspace({ id: 'saved' }));
+    await vi.advanceTimersByTimeAsync(100);
+    expect(onSaved).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports persistence failures through hooks', async () => {
+    const onError = vi.fn();
+    db.put.mockRejectedValueOnce(new Error('quota exceeded'));
+    const saver = createDebouncedSaver(100, { onError });
+    saver(createWorkspace({ id: 'failed' }));
+    await vi.advanceTimersByTimeAsync(100);
+    expect(onError).toHaveBeenCalledOnce();
+  });
 });
