@@ -111,6 +111,6 @@ export function unassignTag(graph: GraphData, nodeId: string, tag: string): Grap
   return updateNode(graph, nodeId, { tags: (graph.nodes.find((node) => node.id === nodeId)?.tags ?? []).filter((value) => value !== tag) });
 }
 
-export function replaceGraph(graph: GraphData, incoming: GraphData): GraphData {
+export function replaceGraph(incoming: GraphData): GraphData {
   return cloneGraph(incoming);
 }
