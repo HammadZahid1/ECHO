@@ -54,7 +54,17 @@ export function GraphViewport() {
   })();
 
   return (
-    <section className="relative min-h-0 flex-1 overflow-hidden bg-[#08090b]" aria-label="Knowledge graph viewport">
+    <section
+      className="relative min-h-0 flex-1 overflow-hidden bg-[#08090b]"
+      aria-label="Knowledge graph viewport"
+      onContextMenu={(event) => {
+        if (event.defaultPrevented) return;
+        const target = event.target as HTMLElement;
+        if (target.closest('button, input, select, textarea, [role="menu"], [role="dialog"]')) return;
+        event.preventDefault();
+        useUIStore.getState().openContextMenu({ x: event.clientX, y: event.clientY, target: 'graph' });
+      }}
+    >
       {content}
       {graph.nodes.length > 0 && <GraphControls />}
     </section>
