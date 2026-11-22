@@ -52,7 +52,7 @@ export interface ExportResult {
 
 export interface ParsedDocument {
   title: string;
-  nodes: Partial<KnowledgeNode>[];
+  nodes: (Partial<KnowledgeNode> & { level?: number })[];
   edges: { sourceIndex: number; targetIndex: number; label: string; type: string }[];
   tags: string[];
 }
