@@ -59,16 +59,25 @@ export async function storageInfo(): Promise<{ usage: number; quota: number }> {
   return estimateStorage();
 }
 
-export function createDebouncedSaver(delay = 600): (workspace: GraphWorkspace) => void {
+export interface DebouncedSaveHooks {
+  onSaved?: () => void;
+  onError?: (error: unknown) => void;
+}
+
+export function createDebouncedSaver(delay = 600, hooks: DebouncedSaveHooks = {}): (workspace: GraphWorkspace) => void {
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pending: GraphWorkspace | undefined;
   return (workspace: GraphWorkspace) => {
     pending = workspace;
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      if (pending) void saveWorkspace(pending).catch(() => undefined);
+      const next = pending;
       pending = undefined;
       timer = undefined;
+      if (!next) return;
+      void saveWorkspace(next)
+        .then(() => hooks.onSaved?.())
+        .catch((error: unknown) => hooks.onError?.(error));
     }, delay);
   };
 }
