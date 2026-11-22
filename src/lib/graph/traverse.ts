@@ -22,6 +22,7 @@ export function breadthFirst(
   while (cursor < queue.length) {
     const current = queue[cursor];
     cursor += 1;
+    result.push(current);
     const atLimit = current.depth >= maxDepth;
     options.onVisit?.(current);
     if (atLimit) continue;
