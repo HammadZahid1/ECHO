@@ -82,6 +82,19 @@ describe('scoreDocument', () => {
     expect(result.score - base.score).toBeLessThanOrEqual(4.5);
   });
 
+  it('does not boost unrelated documents with importance or recency', () => {
+    const document = makeDoc({
+      title: 'Alpha',
+      normalizedTitle: 'alpha',
+      searchText: 'alpha',
+      tokens: new Set(['alpha']),
+      importance: 5,
+      updatedAt: Date.now(),
+    });
+
+    expect(scoreDocument(document, 'zzzznotfoundzzzz')).toEqual({ score: 0, matchedFields: [] });
+  });
+
   it('falls back to token prefixes only for terms longer than two characters', () => {
     const document = makeDoc({ searchText: 'unrelated', tokens: new Set(['quantum']) });
 
