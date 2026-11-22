@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { Html, OrbitControls, Stars } from '@react-three/drei';
 import * as THREE from 'three';
-import type { GraphData, GraphVisualSettings, Vec3 } from '@/types';
+import type { GraphData, GraphVisualSettings } from '@/types';
 import { NODE_TYPE_INFO } from '@/lib/graph/registry';
 import { useGraphStore } from '@/store/graphStore';
 import { useUIStore } from '@/store/uiStore';
@@ -32,7 +32,8 @@ function NodeField({ graph, visual, selectedIds, hoveredId }: SceneProps) {
   const clock = useRef(0);
 
   useFrame((_, delta) => {
-    if (!mesh.current) return;
+    const instanced = mesh.current;
+    if (!instanced) return;
     clock.current += delta;
     const positions = simulation.current.getPositions();
     graph.nodes.forEach((node, index) => {
@@ -44,14 +45,14 @@ function NodeField({ graph, visual, selectedIds, hoveredId }: SceneProps) {
       dummy.position.set(position.x, position.y, position.z);
       dummy.scale.setScalar(scale);
       dummy.updateMatrix();
-      mesh.current.setMatrixAt(index, dummy.matrix);
+      instanced.setMatrixAt(index, dummy.matrix);
       const color = new THREE.Color(node.color ?? NODE_TYPE_INFO[node.type].color);
       if (isSelected) color.lerp(new THREE.Color('#ffffff'), 0.35);
       if (node.pinned) color.lerp(new THREE.Color('#e3b35c'), 0.3);
-      mesh.current.setColorAt(index, color);
+      instanced.setColorAt(index, color);
     });
-    mesh.current.instanceMatrix.needsUpdate = true;
-    if (mesh.current.instanceColor) mesh.current.instanceColor.needsUpdate = true;
+    instanced.instanceMatrix.needsUpdate = true;
+    if (instanced.instanceColor) instanced.instanceColor.needsUpdate = true;
   });
 
   const nodeIdAt = (event: ThreeEvent<MouseEvent>): string | null => {
