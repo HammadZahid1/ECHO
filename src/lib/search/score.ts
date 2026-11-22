@@ -73,8 +73,12 @@ export function scoreDocument(document: SearchDocument, query: string): ScoreRes
     }
   }
 
-  score += document.importance * 2;
-  score += Math.min(1, document.updatedAt / Date.now()) * 0.5;
+  // Importance and recency are tie-breakers only: they must never turn an
+  // unrelated document into a search result.
+  if (matchedFields.size > 0) {
+    score += document.importance * 2;
+    score += Math.min(1, document.updatedAt / Date.now()) * 0.5;
+  }
   return { score, matchedFields: [...matchedFields] };
 }
 
