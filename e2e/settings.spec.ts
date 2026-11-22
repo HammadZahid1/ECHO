@@ -5,14 +5,13 @@ test('changes theme and persists it locally', async ({ page }) => {
   await page.goto('/');
   await skipOnboarding(page);
   await openCommandPalette(page);
-  const commandInput = page.getByRole('textbox', { name: 'Command palette search' });
-  await commandInput.fill('settings');
+  await page.getByRole('textbox', { name: 'Command palette search' }).fill('settings');
   await page.getByRole('button', { name: 'Open settings' }).click();
   await expect(page.getByRole('dialog', { name: 'ECHO settings' })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Graphite' }).click();
+  await page.getByRole('tablist', { name: 'Theme' }).getByRole('tab', { name: 'Graphite' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'graphite');
-  await page.getByRole('button', { name: 'Violet' }).click();
+  await page.getByRole('tablist', { name: 'Accent' }).getByRole('tab', { name: 'Violet' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-accent', 'violet');
 
   await page.reload();
@@ -26,7 +25,6 @@ test('toggles reduced motion from settings', async ({ page }) => {
   await openCommandPalette(page);
   await page.getByRole('textbox', { name: 'Command palette search' }).fill('settings');
   await page.getByRole('button', { name: 'Open settings' }).click();
-  const toggle = page.getByRole('checkbox', { name: /Reduced motion/ });
-  await toggle.check();
+  await page.getByRole('switch', { name: 'Reduced motion' }).click();
   await expect(page.locator('html')).toHaveClass(/echo-reduce-motion/);
 });
