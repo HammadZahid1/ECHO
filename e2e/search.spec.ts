@@ -10,9 +10,10 @@ test('searches local knowledge and focuses a result', async ({ page }) => {
   await page.getByRole('button', { name: 'Search knowledge' }).click();
   const input = page.getByRole('textbox', { name: 'Search knowledge' });
   await input.fill('architecture');
-  const results = page.locator('[role=dialog] button').filter({ hasText: 'architecture' });
-  await expect(results.first()).toBeVisible();
-  await results.first().click();
+
+  const result = page.locator('[data-testid="search-result"]').filter({ hasText: 'Software architecture' }).first();
+  await expect(result).toBeVisible();
+  await result.click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
 });
 
