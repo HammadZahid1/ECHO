@@ -14,7 +14,7 @@ test('switches between all visualization modes', async ({ page }) => {
     { label: 'Clusters', check: () => expect(page.getByText('Knowledge clusters')).toBeVisible() },
     { label: 'Timeline', check: () => expect(page.getByText('Knowledge timeline')).toBeVisible() },
     { label: 'Table', check: () => expect(page.locator('tbody tr').first()).toBeVisible() },
-    { label: 'Network Overview', check: () => expect(page.getByText('Network overview')).toBeVisible() },
+    { label: 'Network Overview', check: () => expect(page.getByRole('heading', { name: 'Network overview' })).toBeVisible() },
     { label: '3D Universe', check: () => expect(page.locator('canvas')).toHaveCount(1) },
   ];
 
