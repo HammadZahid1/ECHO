@@ -1,5 +1,5 @@
-import type { GraphData, GraphSnapshot, KnowledgeNode } from './graph';
-import type { GraphWorkspace } from './workspace';
+import type { GraphData, KnowledgeNode } from './graph';
+import type { GraphSnapshot, GraphWorkspace } from './workspace';
 
 export interface ImportIssue {
   severity: 'error' | 'warning' | 'info';
