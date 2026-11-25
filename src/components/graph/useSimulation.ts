@@ -15,7 +15,6 @@ export function useSimulation(enabled: boolean): React.MutableRefObject<ForceSim
 
   useEffect(() => {
     simulation.current.initialize(graph, new Map(graph.nodes.map((node) => [node.id, node.position])));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspace.id, graph.nodes.length]);
 
   useEffect(() => {
