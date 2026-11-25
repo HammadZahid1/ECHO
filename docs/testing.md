@@ -1,21 +1,32 @@
 # Testing
 
-ECHO tests are local unit tests with Vitest. There is no backend, no AI API, no hosted model, no embedding service, and no external data service involved in the test suite.
+ECHO is verified locally with TypeScript, ESLint, Vitest, Playwright, and a production build. There is no backend, AI API, hosted model, embedding service, or external data service involved in the test suite.
 
 ## Commands
 
 From the repository root:
 
 ```powershell
-npm run test
-npm run test:watch
-npm run test:coverage
 npm run typecheck
 npm run lint
+npm run test
+npm run test:e2e
 npm run build
 ```
 
-`npm run test:e2e` exists as a script in `package.json`, but no browser e2e test files were found in the current source tree.
+`npm run test:e2e` uses `playwright.config.ts`. The config starts the local Vite dev server on `http://127.0.0.1:4174` and runs the specs in `e2e/` with Chromium.
+
+## Verified Results
+
+The final verification pass recorded:
+
+- `npm run typecheck`: clean
+- `npm run lint`: clean
+- `npm run test`: 117 test files, 796 tests passed
+- `npm run test:e2e`: 17 browser tests passed
+- `npm run build`: succeeded, 2828 modules transformed
+
+These results describe the local Chromium and Node environment used for development. They are not a claim of coverage for every browser/device combination.
 
 ## Vitest Configuration
 
@@ -26,58 +37,55 @@ npm run build
 
 ## Test Locations
 
-Existing unit tests live under:
+Unit and component tests live under:
 
 - `src/lib/graph/tests`
 - `src/lib/layout/tests`
 - `src/lib/search/tests`
+- `src/lib/importers/tests`
+- `src/lib/exporters/tests`
 - `src/lib/persistence/tests`
-- exporter/importer/utility test files under `src/lib`
+- `src/lib/utils/tests`
+- `src/components/ui/tests`
+- `src/components/shell/tests`
+- `src/components/panels/tests`
+- `src/components/views/tests`
+- `src/components/graph/tests`
+- `src/hooks/tests`
+- `src/store/tests`
+- `src/data/demo/tests`
+- `src/test/smoke.test.ts`
 
-`src/test/smoke.test.ts` only checks that `1 + 1 === 2`.
+Browser tests live under `e2e/`.
 
 ## What Is Covered
 
-- graph adjacency, traversal, paths, clustering, health
-- layout math and force behavior
-- search indexing and scoring
-- import/export serialization
-- persistence helpers
+- graph adjacency, traversal, paths, clustering, health, validation, and factories
+- deterministic layouts, physics stepping, and layout dispatch
+- search indexing, weighted scoring, fuzzy matching, and highlighting
+- local import and export pipelines, including malformed input
+- IndexedDB schema, migrations, preferences, and debounced saves
+- UI primitives, dialogs, menus, controls, toasts, and empty/error states
+- shell composition, navigation, status reporting, and collection management
+- panels for search, import/export, settings, analytics, health, paths, snapshots, timelines, and workspaces
+- views such as radial, hierarchy, cluster, table, network, and timeline explorers
+- hooks, Zustand stores, selectors, and demo dataset invariants
+- Playwright flows for navigation, shortcuts, creation/undo, search, import/export, settings persistence, layouts, context menus, and reload persistence
 
 ## What Is Not Covered
 
-- full browser interaction flows
-- 3D rendering behavior
-- keyboard shortcut integration in a real browser
-- UI panel interactions beyond unit-level helpers
-
-Do not describe the suite as browser e2e coverage.
+- WebGL rendering internals or GPU-specific behavior
+- real-device browser matrices or visual regression baselines
+- a formal screen reader audit
+- network behavior, because the application intentionally has no backend
 
 ## Test Style
 
 - Keep algorithm tests deterministic.
 - Use stable ids and fixed inputs.
-- Do not rely on wall-clock time unless explicitly testing recency behavior.
+- Avoid wall-clock dependence except where recency is the behavior under test.
 - Do not call network services.
-- Avoid mocking AI APIs; none should exist.
-
-## Adding Tests
-
-1. Place tests next to the module under a `tests` directory or as a `.test.ts` file under `src`.
-2. Import public functions rather than private internals where possible.
-3. Assert exact outputs for deterministic algorithms.
-4. Run `npm run test` and `npm run typecheck` before submitting changes.
-
-## Verification Before Documentation Changes
-
-Even documentation-only changes should not break known commands:
-
-```powershell
-npm run typecheck
-npm run lint
-npm run test
-npm run build
-```
+- Prefer behavior-level assertions based on roles, labels, and visible state.
 
 ## Manual Verification
 
@@ -87,13 +95,13 @@ For UI behavior, start:
 npm run dev
 ```
 
-Then check shortcuts, views, import/export, workspaces, snapshots, and accessibility settings manually. See `docs/shortcuts.md`, `docs/views.md`, `docs/accessibility.md`, and `docs/user-guide.md`.
+Then check shortcuts, views, import/export, workspaces, snapshots, persistence, and accessibility settings manually. See `docs/shortcuts.md`, `docs/views.md`, `docs/accessibility.md`, and `docs/user-guide.md`.
 
 ## Local-Only Guarantees
 
-- Tests run without servers.
+- Tests run without servers other than the local Vite/Playwright harness.
 - No API keys are required.
 - No hosted services are contacted.
 - No embedding or model endpoints are needed.
 
-See `docs/architecture.md` and `docs/performance.md`.
+See `docs/architecture.md`, `docs/performance.md`, and `FINAL_VERIFICATION.md`.
