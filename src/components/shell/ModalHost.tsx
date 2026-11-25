@@ -12,7 +12,9 @@ import { SnapshotsPanel } from '@/components/panels/SnapshotsPanel';
 import { ComparePanel } from '@/components/panels/ComparePanel';
 import { ShortcutsPanel } from '@/components/panels/ShortcutsPanel';
 
-const DIALOGS: Record<Exclude<ReturnType<typeof dialogKey>, null>, { title: string; description: string; width: string }> = {
+type DialogKey = 'settings' | 'import' | 'export' | 'shortcuts' | 'onboarding' | 'snapshot' | 'compare' | 'workspace' | 'confirm';
+
+const DIALOGS: Record<DialogKey, { title: string; description: string; width: string }> = {
   settings: { title: 'ECHO settings', description: 'Tune behavior, appearance, physics and accessibility. Stored on this device.', width: 'max-w-3xl' },
   import: { title: 'Import knowledge', description: 'Bring structured or unstructured knowledge into your local universe.', width: 'max-w-3xl' },
   export: { title: 'Export knowledge', description: 'Produce portable files from your local-only knowledge graph.', width: 'max-w-2xl' },
@@ -23,10 +25,6 @@ const DIALOGS: Record<Exclude<ReturnType<typeof dialogKey>, null>, { title: stri
   workspace: { title: 'Workspaces', description: 'Keep separate knowledge universes side by side on this device.', width: 'max-w-4xl' },
   confirm: { title: 'Confirm action', description: 'This action changes the current universe.', width: 'max-w-md' },
 };
-
-function dialogKey(): 'settings' | 'import' | 'export' | 'shortcuts' | 'onboarding' | 'snapshot' | 'compare' | 'workspace' | 'confirm' | null {
-  return useUIStore.getState().modal;
-}
 
 export function ModalHost() {
   const modal = useUIStore((state) => state.modal);
