@@ -10,6 +10,7 @@ import { useUIStore } from '@/store/uiStore';
 import { DEMO_DATASETS } from '@/data/demo';
 import { exportWorkspace, DEFAULT_EXPORT_OPTIONS } from '@/lib/exporters';
 import { importContent } from '@/lib/importers';
+import { normalizeGraph } from '@/lib/graph/validate';
 import { downloadBlob, readFileAsText } from '@/lib/utils/download';
 import type { GraphBundle, GraphData } from '@/types';
 
@@ -83,21 +84,23 @@ export function WorkspacePanel() {
     try {
       const text = await readFileAsText(file);
       let graph: GraphData | null = null;
+      let rawGraph: unknown = null;
       let name = file.name.replace(/\.json$/i, '');
       try {
         const parsed = JSON.parse(text) as GraphBundle & { nodes?: unknown[] };
         if (parsed.format === 'echo-workspace' && parsed.workspace?.graph && isGraphData(parsed.workspace.graph)) {
-          graph = parsed.workspace.graph;
+          rawGraph = parsed.workspace.graph;
           name = parsed.workspace.name ?? name;
         } else if (parsed.format === 'echo-snapshot' && parsed.snapshot?.graph && isGraphData(parsed.snapshot.graph)) {
-          graph = parsed.snapshot.graph;
+          rawGraph = parsed.snapshot.graph;
           name = parsed.snapshot.name ?? name;
         } else if (isGraphData(parsed)) {
-          graph = parsed;
+          rawGraph = parsed;
         }
       } catch {
-        graph = null;
+        rawGraph = null;
       }
+      if (rawGraph) graph = normalizeGraph(rawGraph).graph;
       if (!graph) {
         const result = importContent(text, file.name);
         if (!result.ok) {
