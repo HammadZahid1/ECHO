@@ -56,13 +56,16 @@ export function ExplorerPanel() {
   }, [hops]);
   const depth = mode.endsWith('-hop') ? Number(mode[0]) : 3;
 
-  const cutoff = dateFilter === 'any' ? null : Date.now() - Number(dateFilter.split('-')[1]) * DAY;
+  const cutoff = dateFilter === 'any'
+    ? null
+    : Date.now() - Number.parseInt(dateFilter.split('-')[1] ?? '0', 10) * DAY;
   const results = useMemo(() => {
     const scoped = new Set<string>(
-      mode === 'isolated' ? stats.isolatedNodeIds
-        : mode === 'hubs' ? stats.mostConnectedNodeIds
-          : hops ? hops.nodeIds.filter((id) => (depthByNode.get(id) ?? 99) <= depth)
-            : graph.nodes.map((node) => node.id),
+      mode === 'universe' ? graph.nodes.map((node) => node.id)
+        : mode === 'isolated' ? stats.isolatedNodeIds
+          : mode === 'hubs' ? stats.mostConnectedNodeIds
+            : hops ? hops.nodeIds.filter((id) => (depthByNode.get(id) ?? 99) <= depth)
+              : graph.nodes.map((node) => node.id),
     );
     return graph.nodes
       .filter((node) => {
