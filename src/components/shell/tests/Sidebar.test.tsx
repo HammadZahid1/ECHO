@@ -86,7 +86,7 @@ describe('Sidebar', () => {
     fireEvent.change(input, { target: { value: 'Research' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add' }));
     expect(useGraphStore.getState().workspaces[0].collections[0].name).toBe('Research');
-    expect(screen.getByRole('button', { name: /Research/ })).toBeInTheDocument();
+    expect(screen.getByText('Research')).toBeInTheDocument();
     expect(screen.queryByText(/No collections yet/)).not.toBeInTheDocument();
   });
 
@@ -97,12 +97,34 @@ describe('Sidebar', () => {
     ], [collection]));
     render(<Sidebar />);
 
-    const button = screen.getByRole('button', { name: /Research/ });
+    const button = screen.getByText('Research').closest('button');
+    if (!button) throw new Error('Collection filter button not found');
     fireEvent.click(button);
     expect(useGraphStore.getState().filters.collectionId).toBe('c1');
     expect(useGraphStore.getState().selectedNodeIds).toEqual(['n1']);
 
     fireEvent.click(button);
+    expect(useGraphStore.getState().filters.collectionId).toBeNull();
+  });
+
+  it('renames and deletes collections while clearing an active collection filter', () => {
+    setWorkspace(makeWorkspace([createNode({ id: 'n1', title: 'Included', collectionIds: ['c1'] })], [collection]));
+    render(<Sidebar />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Rename Research' }));
+    fireEvent.change(screen.getByLabelText('Rename Research'), { target: { value: 'Focused research' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(useGraphStore.getState().workspaces[0].collections[0].name).toBe('Focused research');
+
+    const filterButton = screen.getByText('Focused research').closest('button');
+    if (!filterButton) throw new Error('Renamed collection button not found');
+    fireEvent.click(filterButton);
+    expect(useGraphStore.getState().filters.collectionId).toBe('c1');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Focused research' }));
+    expect(useUIStore.getState().confirmAction).toBeTypeOf('function');
+    act(() => useUIStore.getState().confirmAction?.());
+    expect(useGraphStore.getState().workspaces[0].collections).toHaveLength(0);
     expect(useGraphStore.getState().filters.collectionId).toBeNull();
   });
 
@@ -135,11 +157,18 @@ describe('Sidebar', () => {
     expect(screen.getByText('0 in this universe')).toBeInTheDocument();
   });
 
-  it('renders the demo universes header but no dataset list (known source defect)', () => {
+  it('lets the demo universes panel expand and load a curated dataset', () => {
     render(<Sidebar />);
     expect(screen.getByText('Demo universes')).toBeInTheDocument();
-    // Panel has defaultCollapsed without collapsible, so its body is unreachable.
-    expect(screen.queryByRole('button', { name: 'Expand Demo universes' })).not.toBeInTheDocument();
     expect(screen.queryByText('Astronomy & Cosmology')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Expand Demo universes' }));
+    expect(screen.getByText('Astronomy & Cosmology')).toBeInTheDocument();
+
+    const demoButton = screen.getByRole('button', { name: /Astronomy & Cosmology/ });
+    fireEvent.click(demoButton);
+    expect(useUIStore.getState().modal).toBe('confirm');
+    act(() => useUIStore.getState().confirmAction?.());
+    expect(useGraphStore.getState().workspaces[0].graph.nodes.length).toBeGreaterThan(0);
   });
 });
