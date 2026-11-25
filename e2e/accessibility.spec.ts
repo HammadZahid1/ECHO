@@ -26,7 +26,7 @@ test('exposes labelled primary controls', async ({ page }) => {
   await page.goto('/');
   await skipOnboarding(page);
   for (const name of ['Search knowledge', 'Command palette (Ctrl+K)', 'Create node (N)']) {
-    await expect(page.getByLabel(name).first()).toBeVisible();
+    await expect(page.getByLabel(name).and(page.locator(':visible')).first()).toBeVisible();
   }
   await expect(page.getByRole('combobox', { name: 'Graph layout' })).toBeVisible();
 });
