@@ -15,8 +15,8 @@ Most note tools store information in flat lists or rigid folders. ECHO treats kn
 - **Layout engine** — force-directed physics plus radial, circular, tree, grid, cluster and organic layouts with live controls.
 - **Analysis** — connected components, deterministic clustering, shortest and alternate paths, graph health diagnostics, real statistics and growth analytics.
 - **Knowledge tools** — node/relationship inspector, weighted search, command palette, path finder, snapshots, snapshot comparison, import and export.
-- **Organization** — multiple local workspaces, collections, tags, snapshots, and IndexedDB persistence with local preference storage.
-- **Experience** — keyboard shortcuts, context menus, onboarding, responsive layouts, high-contrast and reduced-motion support.
+- **Organization** — multiple local workspaces, renameable/deletable collections, tags, snapshots, and IndexedDB persistence with local preference storage.
+- **Experience** — keyboard shortcuts, context menus, onboarding, responsive layouts, high-contrast and reduced-motion support, and an optional screen-reader graph summary.
 
 ## Technology
 
@@ -33,9 +33,13 @@ Verification:
 
 ```bash
 npm run typecheck
+npm run lint
 npm run test
+npm run test:e2e
 npm run build
 ```
+
+The final local verification passed TypeScript, ESLint, 796 Vitest tests across 117 files, 17 Playwright browser tests, and the production build. See `FINAL_VERIFICATION.md` for details and limitations.
 
 All data stays in the browser. ECHO never sends knowledge to a server. Use export if you want portable copies of your work.
 
@@ -52,6 +56,7 @@ All data stays in the browser. ECHO never sends knowledge to a server. Use expor
 - `docs/ROADMAP.md` — engineering plan and task ledger.
 - `docs/architecture.md` — design decisions and data flow.
 - `docs/formats.md` — import/export format reference.
+- `FINAL_VERIFICATION.md` — final verification results and honest limitations.
 
 ## Honesty notes
 
