@@ -1,6 +1,6 @@
 # Accessibility
 
-ECHO aims to keep its graph interface usable with keyboard controls, readable visual modes, and reduced motion. All behavior is local; there is no backend, no AI API, no hosted model, no embedding service, and no external data service.
+ECHO aims to keep its graph interface usable with keyboard controls, readable visual modes, and reduced motion. All behavior is local; there is no backend, AI API, hosted model, embedding service, or external data service.
 
 ## Accessibility Settings
 
@@ -25,7 +25,7 @@ Settings expose:
 
 ## High Contrast
 
-`highContrast` applies `echo-high-contrast` to the shell. It is intended to improve edge/text separation in dense graph views.
+`highContrast` applies `echo-high-contrast` to the shell. It improves edge/text separation in dense graph views.
 
 ## Large Text
 
@@ -33,9 +33,14 @@ Settings expose:
 
 ## Screen Reader Graph Summary
 
-- `screenReaderGraphSummary` exists as a preference.
-- No consumer of this flag was observed in the current code.
-- Do not assume a generated spoken graph summary is available.
+When `screenReaderGraphSummary` is enabled, `GraphViewport` renders a visually hidden live region describing:
+
+- node and relationship counts
+- cluster and isolated-node counts
+- number of selected nodes
+- up to three most-connected node titles
+
+The summary updates from the same filtered graph data used by the active view. It is a structural summary, not a full reading of every node or relationship.
 
 ## Keyboard Access
 
@@ -53,12 +58,14 @@ Global shortcuts are listed in `docs/shortcuts.md`:
 
 Most shortcuts are suppressed in text inputs, textareas, and contenteditable elements.
 
+Menus focus their first item when opened, support Escape, and close on outside pointer press. Dialogs expose accessible titles and close controls. Toasts use a polite live region.
+
 ## Graph Rendering Caveats
 
-- 3D uses canvas/WebGL-style instanced rendering, so individual nodes are not automatically DOM controls.
-- 2D uses Canvas 2D; node hit-testing is pointer-based.
+- The 3D universe uses WebGL canvas rendering, so individual nodes are not automatically DOM controls.
+- The 2D graph uses Canvas 2D; node hit-testing is pointer-based.
 - Table view is the most conventional DOM-oriented way to inspect nodes.
-- No ARIA live graph summary implementation was observed.
+- The live graph summary provides structure, but it does not replace a full screen reader audit.
 
 ## Inclusive Implementation Rules
 
@@ -66,7 +73,7 @@ Most shortcuts are suppressed in text inputs, textareas, and contenteditable ele
 - Preserve focus when toggling panels where possible.
 - Do not remove focus outlines without an equivalent visible indicator.
 - Keep motion settings respected by simulations, camera moves, and transitions.
-- Do not claim screen reader graph summaries until a consumer is implemented.
+- Do not claim feature parity between canvas renderers and DOM views.
 
 ## Verification
 
@@ -75,7 +82,10 @@ npm run typecheck
 npm run lint
 npm run test
 npm run build
+npm run test:e2e
 ```
+
+Automated checks cover labelled controls, keyboard creation/undo, context menu opening and dismissal, settings persistence, and the screen-reader summary component. Real screen reader verification remains manual.
 
 Manual checks:
 
@@ -83,5 +93,6 @@ Manual checks:
 2. Reload and confirm preference persistence.
 3. Navigate with keyboard only through top bar, sidebar, graph, and right panel.
 4. Verify `prefers-reduced-motion` with an OS/browser setting change.
+5. Use a screen reader with the graph summary enabled and disabled.
 
 See `docs/shortcuts.md`, `docs/user-guide.md`, and `docs/testing.md`.
