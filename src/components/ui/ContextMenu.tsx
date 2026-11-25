@@ -29,12 +29,14 @@ export function ContextMenu({ state, items, onClose, title }: ContextMenuProps) 
     };
     document.addEventListener('mousedown', handlePointer);
     document.addEventListener('keydown', handleKey);
-    ref.current?.querySelector<HTMLButtonElement>('button')?.focus();
     return () => {
       document.removeEventListener('mousedown', handlePointer);
       document.removeEventListener('keydown', handleKey);
     };
   }, [onClose]);
+  useEffect(() => {
+    ref.current?.querySelector<HTMLButtonElement>('button')?.focus();
+  }, []);
 
   const x = Math.min(state.x, window.innerWidth - 220);
   const y = Math.min(state.y, window.innerHeight - items.length * 34 - 40);
