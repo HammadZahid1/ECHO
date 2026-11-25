@@ -77,10 +77,8 @@ describe('ToastHost', () => {
     expect(screen.queryByText('Short lived')).not.toBeInTheDocument();
     expect(screen.getByText('Long lived')).toBeInTheDocument();
 
-    // Known behavior: dismissing one toast resets the remaining toast timers.
+    // Dismissing one toast must not reset the remaining toast's deadline.
     act(() => vi.advanceTimersByTime(4000));
-    expect(screen.getByText('Long lived')).toBeInTheDocument();
-    act(() => vi.advanceTimersByTime(1000));
     expect(screen.queryByText('Long lived')).not.toBeInTheDocument();
     expect(useUIStore.getState().toasts).toEqual([]);
   });
