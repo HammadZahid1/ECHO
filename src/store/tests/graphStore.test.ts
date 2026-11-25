@@ -86,7 +86,7 @@ describe('graphStore', () => {
 
     useGraphStore.getState().renameWorkspace(createdId, 'Renamed');
     useGraphStore.getState().setWorkspaceColor(createdId, '#ff0000');
-    let workspace = useGraphStore.getState().workspaces.find((item) => item.id === createdId)!;
+    const workspace = useGraphStore.getState().workspaces.find((item) => item.id === createdId)!;
     expect(workspace.name).toBe('Renamed');
     expect(workspace.color).toBe('#ff0000');
 
