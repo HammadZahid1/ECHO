@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import type { ToastMessage } from '@/types';
 import { useUIStore } from '@/store/uiStore';
@@ -14,11 +14,33 @@ const ICONS: Record<ToastMessage['kind'], React.ReactNode> = {
 export function ToastHost() {
   const toasts = useUIStore((state) => state.toasts);
   const dismissToast = useUIStore((state) => state.dismissToast);
+  const timers = useRef(new Map<string, number>());
 
   useEffect(() => {
-    const timers = toasts.map((toast) => window.setTimeout(() => dismissToast(toast.id), toast.duration));
-    return () => timers.forEach((timer) => window.clearTimeout(timer));
+    const activeIds = new Set(toasts.map((toast) => toast.id));
+    for (const [id, timer] of timers.current) {
+      if (!activeIds.has(id)) {
+        window.clearTimeout(timer);
+        timers.current.delete(id);
+      }
+    }
+    for (const toast of toasts) {
+      if (timers.current.has(toast.id)) continue;
+      const timer = window.setTimeout(() => {
+        timers.current.delete(toast.id);
+        dismissToast(toast.id);
+      }, toast.duration);
+      timers.current.set(toast.id, timer);
+    }
   }, [toasts, dismissToast]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      pending.forEach((timer) => window.clearTimeout(timer));
+      pending.clear();
+    };
+  }, []);
 
   if (toasts.length === 0) return null;
   return (
