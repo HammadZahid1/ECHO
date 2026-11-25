@@ -60,11 +60,11 @@ describe('ExplorerPanel', () => {
   it('lists the connected nodes sorted by importance and reports the visible count', () => {
     renderPanel();
     expect(screen.getByRole('heading', { name: 'Explorer' })).toBeInTheDocument();
-    expect(screen.getByText('3/4 nodes · 2 clusters')).toBeInTheDocument();
+    expect(screen.getByText('4/4 nodes · 2 clusters')).toBeInTheDocument();
     const titles = screen.getAllByRole('button').map((button) => button.textContent ?? '');
     expect(titles.findIndex((text) => text.includes('Alpha'))).toBeLessThan(titles.findIndex((text) => text.includes('Beta')));
     expect(nodeButton('Alpha')).toBeInTheDocument();
-    expect(screen.queryByText('Delta')).not.toBeInTheDocument();
+    expect(nodeButton('Delta')).toBeInTheDocument();
   });
 
   it('restricts results to isolated nodes in isolated mode', () => {
@@ -112,18 +112,20 @@ describe('ExplorerPanel', () => {
     expect(screen.getByRole('button', { name: 'Clear filters' })).toBeInTheDocument();
     expect(screen.queryByText('Delta')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
-    expect(screen.getByText('3/4 nodes · 2 clusters')).toBeInTheDocument();
+    expect(screen.getByText('4/4 nodes · 2 clusters')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument();
   });
 
-  it('filters by minimum importance and tracks the selected date option', () => {
+  it('filters by minimum importance and by creation date', () => {
     renderPanel();
     fireEvent.change(screen.getByRole('slider', { name: 'Minimum importance' }), { target: { value: '0.6' } });
     expect(screen.getByText('1/4 nodes · 2 clusters')).toBeInTheDocument();
     expect(nodeButton('Alpha')).toBeInTheDocument();
+
     fireEvent.change(screen.getByLabelText('Date'), { target: { value: 'created-7d' } });
     expect(screen.getByLabelText('Date')).toHaveValue('created-7d');
-    expect(screen.getByText('1/4 nodes · 2 clusters')).toBeInTheDocument();
+    expect(screen.getByText('0/4 nodes · 2 clusters')).toBeInTheDocument();
+    expect(screen.queryByText('Alpha')).not.toBeInTheDocument();
   });
 
   it('selects and focuses a node, with shift-click adding to the selection', () => {
