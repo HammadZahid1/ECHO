@@ -157,4 +157,25 @@ describe('WorkspacePanel', () => {
     expect(useGraphStore.getState().workspaces[2].graph.nodes.map((node) => node.title)).toEqual(['Bundle node']);
     expect(useUIStore.getState().toasts[0]).toMatchObject({ title: 'Imported “Bundle”' });
   });
+
+  it('normalises malformed JSON graph bundles instead of cloning incomplete nodes', async () => {
+    const payload = JSON.stringify({
+      nodes: [{ id: 'm1', title: 'Malformed but recoverable' }],
+      edges: [],
+      tags: [],
+    });
+    vi.mocked(readFileAsText).mockResolvedValueOnce(payload);
+    renderPanel();
+    const input = document.querySelector('input[type="file"]');
+    if (!input) throw new Error('File input was not rendered');
+    fireEvent.change(input, { target: { files: [new File([payload], 'partial.json', { type: 'application/json' })] } });
+
+    await waitFor(() => expect(workspacesInStore()).toHaveLength(3));
+    const node = useGraphStore.getState().workspaces[2].graph.nodes[0];
+    expect(node.title).toBe('Malformed but recoverable');
+    expect(node.tags).toEqual([]);
+    expect(node.references).toEqual([]);
+    expect(node.collectionIds).toEqual([]);
+    expect(node.metadata).toEqual({});
+  });
 });
