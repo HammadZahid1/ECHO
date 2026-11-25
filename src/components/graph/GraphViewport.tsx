@@ -1,4 +1,5 @@
 import { useActiveWorkspace, useGraphStore } from '@/store/graphStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import { useUIStore } from '@/store/uiStore';
 import { useDerivedGraph } from '@/hooks/useGraphDerived';
 import { Universe3D } from './Universe3D';
@@ -22,6 +23,7 @@ export function GraphViewport() {
   const createNode = useGraphStore((state) => state.createNode);
   const derived = useDerivedGraph();
   const graph = derived.graph;
+  const screenReaderSummary = useSettingsStore((state) => state.accessibility.screenReaderGraphSummary);
   const shared = {
     graph,
     visual: workspace.settings.visual,
@@ -29,6 +31,17 @@ export function GraphViewport() {
     selectedIds,
     hoveredId,
   };
+  const stats = derived.statistics;
+  const topNodes = stats.mostConnectedNodeIds
+    .map((id) => graph.nodes.find((node) => node.id === id)?.title)
+    .filter((title): title is string => Boolean(title))
+    .slice(0, 3);
+  const summary = [
+    `Graph summary: ${stats.nodeCount} nodes and ${stats.edgeCount} relationships.`,
+    `${stats.clusterCount} clusters and ${stats.isolatedNodeIds.length} isolated nodes.`,
+    selectedIds.length > 0 ? `${selectedIds.length} nodes selected.` : 'No nodes selected.',
+    topNodes.length > 0 ? `Most connected: ${topNodes.join(', ')}.` : '',
+  ].filter(Boolean).join(' ');
 
   const content = (() => {
     if (graph.nodes.length === 0) {
@@ -65,6 +78,7 @@ export function GraphViewport() {
         useUIStore.getState().openContextMenu({ x: event.clientX, y: event.clientY, target: 'graph' });
       }}
     >
+      {screenReaderSummary && <p className="sr-only" aria-live="polite">{summary}</p>}
       {content}
       {graph.nodes.length > 0 && <GraphControls />}
     </section>
