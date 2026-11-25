@@ -64,6 +64,15 @@ describe('ContextMenu', () => {
     expect(screen.getByRole('menuitem', { name: /Rename/ })).toHaveFocus();
   });
 
+  it('does not steal focus when the close callback identity changes', () => {
+    const { rerender } = render(<ContextMenu state={state} items={makeItems()} onClose={() => undefined} />);
+    const second = screen.getByRole('menuitem', { name: /Duplicate/ });
+    second.focus();
+
+    rerender(<ContextMenu state={state} items={makeItems()} onClose={() => undefined} />);
+    expect(second).toHaveFocus();
+  });
+
   it('positions at the requested point and clamps to the viewport', () => {
     const { rerender } = render(<ContextMenu state={state} items={makeItems()} onClose={vi.fn()} />);
     const menu = screen.getByRole('menu');
