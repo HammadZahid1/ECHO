@@ -82,7 +82,7 @@ export function AppShell() {
       <div className="relative flex h-12 shrink-0 items-center border-b border-[#1b1f24] bg-[#0b0d10] lg:hidden">
         <IconButton label="Toggle navigation" className="ml-2" onClick={() => setMobileNav(!mobileNavOpen)}><Menu size={15} /></IconButton>
         <span className="ml-2 text-[11px] font-semibold tracking-[0.3em] text-zinc-300">ECHO</span>
-        <IconButton label="Close navigation" className="ml-auto mr-2" onClick={() => useUIStore.getState().setSearchOpen(true)}><Search size={14} /></IconButton>
+        <IconButton label="Search knowledge" className="ml-auto mr-2" onClick={() => useUIStore.getState().setSearchOpen(true)}><Search size={14} /></IconButton>
       </div>
 
       <div className="hidden lg:block"><TopBar /></div>
