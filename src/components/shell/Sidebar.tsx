@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { ChevronRight, CircleDot, Folder, Hash, Layers, Sparkles } from 'lucide-react';
+import { ChevronRight, CircleDot, Folder, Hash, Layers, Pencil, Sparkles, Trash2 } from 'lucide-react';
 import { useGraphStore, useActiveWorkspace } from '@/store/graphStore';
 import { useUIStore } from '@/store/uiStore';
 import { collectAllTags } from '@/lib/graph/filters';
 import { Panel } from '@/components/ui/Panel';
 import { Button } from '@/components/ui/Button';
+import { IconButton } from '@/components/ui/IconButton';
 import { EmptyState } from '@/components/ui/states';
 import { DEMO_DATASETS } from '@/data/demo';
 
@@ -13,12 +14,16 @@ export function Sidebar() {
   const filters = useGraphStore((state) => state.filters);
   const setFilters = useGraphStore((state) => state.setFilters);
   const addCollection = useGraphStore((state) => state.addCollection);
+  const updateCollection = useGraphStore((state) => state.updateCollection);
+  const deleteCollection = useGraphStore((state) => state.deleteCollection);
   const loadDemo = useGraphStore((state) => state.loadDemo);
   const openModal = useUIStore((state) => state.openModal);
   const pushToast = useUIStore((state) => state.pushToast);
   const selectNodes = useGraphStore((state) => state.selectNodes);
   const [newCollection, setNewCollection] = useState(false);
   const [collectionName, setCollectionName] = useState('');
+  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(null);
+  const [editingCollectionName, setEditingCollectionName] = useState('');
   const tags = collectAllTags(workspace.graph);
   const activeTags = filters.tags ?? [];
 
@@ -60,19 +65,70 @@ export function Sidebar() {
         ) : (
           <div className="space-y-0.5 p-2">
             {workspace.collections.map((collection) => (
-              <button
+              <div
                 key={collection.id}
-                type="button"
-                onClick={() => {
-                  setFilters({ ...filters, collectionId: filters.collectionId === collection.id ? null : collection.id });
-                  selectNodes(workspace.graph.nodes.filter((node) => node.collectionIds.includes(collection.id)).map((node) => node.id));
-                }}
-                className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs ${filters.collectionId === collection.id ? 'bg-cyan-400/10 text-cyan-200' : 'text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200'}`}
+                className={`flex items-center gap-1 rounded ${filters.collectionId === collection.id ? 'bg-cyan-400/10 text-cyan-200' : 'text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-200'}`}
               >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: collection.color }} />
-                <span className="flex-1 truncate">{collection.name}</span>
-                <ChevronRight size={11} className="text-zinc-700" />
-              </button>
+                {editingCollectionId === collection.id ? (
+                  <form
+                    className="flex min-w-0 flex-1 gap-1 py-1"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      const name = editingCollectionName.trim();
+                      if (name) updateCollection(collection.id, { name });
+                      setEditingCollectionId(null);
+                      setEditingCollectionName('');
+                    }}
+                  >
+                    <input
+                      autoFocus
+                      aria-label={`Rename ${collection.name}`}
+                      value={editingCollectionName}
+                      onChange={(event) => setEditingCollectionName(event.target.value)}
+                      className="min-w-0 flex-1 rounded border border-cyan-400/40 bg-black/40 px-2 py-1 text-xs outline-none"
+                    />
+                    <Button size="sm" variant="primary" type="submit" disabled={!editingCollectionName.trim()}>Save</Button>
+                  </form>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFilters({ ...filters, collectionId: filters.collectionId === collection.id ? null : collection.id });
+                        selectNodes(workspace.graph.nodes.filter((node) => node.collectionIds.includes(collection.id)).map((node) => node.id));
+                      }}
+                      className="flex min-w-0 flex-1 items-center gap-2 py-1.5 pl-2 text-left text-xs"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: collection.color }} />
+                      <span className="flex-1 truncate">{collection.name}</span>
+                      <ChevronRight size={11} className="text-zinc-700" />
+                    </button>
+                    <IconButton
+                      label={`Rename ${collection.name}`}
+                      size="sm"
+                      className="text-zinc-600 hover:text-zinc-200"
+                      onClick={() => { setEditingCollectionId(collection.id); setEditingCollectionName(collection.name); }}
+                    >
+                      <Pencil size={11} />
+                    </IconButton>
+                    <IconButton
+                      label={`Delete ${collection.name}`}
+                      size="sm"
+                      className="mr-1 text-zinc-600 hover:text-red-300"
+                      onClick={() => openModal('confirm', {
+                        confirmMessage: `Delete collection “${collection.name}”? Nodes will be kept.`,
+                        confirmAction: () => {
+                          deleteCollection(collection.id);
+                          if (filters.collectionId === collection.id) setFilters({ ...filters, collectionId: null });
+                          pushToast({ kind: 'info', title: `Deleted “${collection.name}”` });
+                        },
+                      })}
+                    >
+                      <Trash2 size={11} />
+                    </IconButton>
+                  </>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -97,7 +153,7 @@ export function Sidebar() {
         )}
       </Panel>
 
-      <Panel title="Demo universes" defaultCollapsed>
+      <Panel title="Demo universes" collapsible defaultCollapsed>
         <div className="space-y-1 p-2">
           {DEMO_DATASETS.map((demo) => (
             <button
