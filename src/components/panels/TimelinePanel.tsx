@@ -88,8 +88,6 @@ export function TimelinePanel() {
       createdAfter: undefined,
       modifiedAfter: undefined,
     });
-    // Filter application is intentionally tied to the selected day only.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDay?.start]);
 
   const maxActivity = Math.max(1, ...visibleDays.map((day) => day.nodes.length + day.edges.length));
